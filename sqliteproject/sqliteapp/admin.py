@@ -19,20 +19,3 @@ class TourRouteAdmin(admin.ModelAdmin):
             'classes': ('collapse',)
         }),
     )
-    
-    # Дополнительные настройки для удобства
-    list_per_page = 20
-    date_hierarchy = 'created_at'
-    
-    # Действия
-    actions = ['mark_as_easy', 'mark_as_hard']
-    
-    def mark_as_easy(self, request, queryset):
-        updated = queryset.update(difficulty='Легкий')
-        self.message_user(request, f'Обновлено {updated} маршрутов на "Легкий"')
-    mark_as_easy.short_description = 'Отметить как "Легкий"'
-    
-    def mark_as_hard(self, request, queryset):
-        updated = queryset.update(difficulty='Тяжелый')
-        self.message_user(request, f'Обновлено {updated} маршрутов на "Тяжелый"')
-    mark_as_hard.short_description = 'Отметить как "Тяжелый"'

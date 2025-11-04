@@ -1,0 +1,98 @@
+{% extends 'tour_routes/base.html' %}
+
+{% block title %}XML-файлы с маршрутами{% endblock %}
+
+{% block content %}
+<h2 class="mb-4 text-center">
+    <i class="bi bi-file-earmark-text-fill text-success"></i>
+    список XML-файлов с маршрутами
+</h2>
+
+{% if message %}
+    <div class="alert alert-info text-center">
+        <i class="bi bi-info-circle"></i>
+        {{ message }}
+        <a href="{% url 'upload_file' %}" class="alert-link">загрузите первый файл</a>
+    </div>
+{% else %}
+    {% for file in files_data %}
+        <div class="card mb-4">
+            <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                    <i class="bi bi-file-earmark-code"></i>
+                    {{ file.filename }}
+                </h5>
+                <a href="{% url 'download_file' file.filename %}" class="btn btn-light btn-sm btn-custom">
+                    <i class="bi bi-download"></i> скачать
+                </a>
+            </div>
+            <div class="card-body">
+                {% if file.content.TourRoute %}
+                    {% for route in file.content.TourRoute %}
+                        <div class="card route-card mb-3">
+                            <div class="card-body">
+                                <h6 class="card-title">
+                                    <i class="bi bi-map"></i> {{ route.name }}
+                                </h6>
+                                <p class="card-text text-muted">{{ route.description }}</p>
+                                <div class="d-flex gap-2 flex-wrap">
+                                    <span class="badge bg-info">
+                                        <i class="bi bi-rulers"></i> {{ route.length_km }} км
+                                    </span>
+                                    <span class="badge bg-warning">
+                                        <i class="bi bi-activity"></i> {{ route.difficulty }}
+                                    </span>
+                                    {% if route.members_count %}
+                                        <span class="badge bg-success">
+                                            <i class="bi bi-people-fill"></i> {{ route.members_count }} чел.
+                                        </span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% elif file.content.name %}
+                    <div class="card route-card">
+                        <div class="card-body">
+                            <h6 class="card-title">
+                                <i class="bi bi-map"></i> {{ file.content.name }}
+                            </h6>
+                            <p class="card-text text-muted">{{ file.content.description }}</p>
+                            <div class="d-flex gap-2 flex-wrap">
+                                <span class="badge bg-info">
+                                    <i class="bi bi-rulers"></i> {{ file.content.length_km }} км
+                                </span>
+                                <span class="badge bg-warning">
+                                    <i class="bi bi-activity"></i> {{ file.content.difficulty }}
+                                </span>
+                                {% if file.content.members_count %}
+                                    <span class="badge bg-success">
+                                        <i class="bi bi-people-fill"></i> {{ file.content.members_count }} чел.
+                                    </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <ul class="list-group">
+                        {% for key, val in file.content.items %}
+                            <li class="list-group-item">
+                                <strong>{{ key }}:</strong> {{ val }}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+        </div>
+    {% endfor %}
+{% endif %}
+
+<div class="text-center mt-4">
+    <a href="{% url 'add_route' %}" class="btn btn-primary btn-custom">
+        <i class="bi bi-plus-circle"></i> добавить маршрут
+    </a>
+    <a href="{% url 'upload_file' %}" class="btn btn-success btn-custom">
+        <i class="bi bi-upload"></i> загрузить файл
+    </a>
+</div>
+{% endblock %}

@@ -1,0 +1,75 @@
+{% extends 'tour_routes/base.html' %}
+
+{% block title %}редактировать маршрут{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <h2 class="mb-4 text-center">
+            <i class="bi bi-pencil-square text-warning"></i>
+            редактировать маршрут
+        </h2>
+
+        {% if message %}
+            <div class="alert alert-{{ message_type }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        {% endif %}
+
+        <form method="post" class="needs-validation" novalidate>
+            {% csrf_token %}
+            
+            <div class="mb-4">
+                <label class="form-label fw-bold">{{ form.name.label }}</label>
+                {{ form.name }}
+                {% if form.name.errors %}
+                    <div class="text-danger small">{{ form.name.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label fw-bold">{{ form.description.label }}</label>
+                {{ form.description }}
+                {% if form.description.errors %}
+                    <div class="text-danger small">{{ form.description.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">{{ form.length_km.label }}</label>
+                    {{ form.length_km }}
+                    {% if form.length_km.errors %}
+                        <div class="text-danger small">{{ form.length_km.errors }}</div>
+                    {% endif %}
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">{{ form.members_count.label }}</label>
+                    {{ form.members_count }}
+                    {% if form.members_count.errors %}
+                        <div class="text-danger small">{{ form.members_count.errors }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label fw-bold">{{ form.difficulty.label }}</label>
+                {{ form.difficulty }}
+                {% if form.difficulty.errors %}
+                    <div class="text-danger small">{{ form.difficulty.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-warning btn-lg btn-custom">
+                    <i class="bi bi-check-circle"></i> сохранить изменения
+                </button>
+                <a href="{% url 'list_database' %}" class="btn btn-secondary btn-lg btn-custom">
+                    <i class="bi bi-x-circle"></i> отмена
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

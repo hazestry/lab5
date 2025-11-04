@@ -1,0 +1,132 @@
+{% extends 'tour_routes/base.html' %}
+
+{% block title %}база данных маршрутов{% endblock %}
+
+{% block content %}
+<h2 class="mb-4 text-center">
+    <i class="bi bi-database-fill text-primary"></i>
+    маршруты из базы данных
+</h2>
+
+<div class="row mb-4">
+    <div class="col-md-8 mx-auto">
+        <div class="input-group">
+            <span class="input-group-text">
+                <i class="bi bi-search"></i>
+            </span>
+            <input type="text" id="search-input" class="form-control form-control-lg" 
+                   placeholder="Поиск маршрутов...">
+        </div>
+    </div>
+</div>
+
+<div id="routes-container">
+    {% if routes %}
+        {% for route in routes %}
+            <div class="card route-card mb-3">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h5 class="card-title mb-2">
+                                <i class="bi bi-map-fill text-primary"></i>
+                                {{ route.name }}
+                            </h5>
+                            <p class="card-text text-muted mb-2">{{ route.description }}</p>
+                            <div class="d-flex gap-3 flex-wrap">
+                                <span class="badge bg-info">
+                                    <i class="bi bi-rulers"></i> {{ route.length_km }} км
+                                </span>
+                                <span class="badge bg-warning">
+                                    <i class="bi bi-activity"></i> {{ route.difficulty }}
+                                </span>
+                                <span class="badge bg-success">
+                                    <i class="bi bi-people-fill"></i> {{ route.members_count }} чел.
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="alert alert-info text-center">
+            <i class="bi bi-info-circle"></i>
+            записей в базе данных нет. 
+            <a href="{% url 'add_route' %}" class="alert-link">добавить первый маршрут</a>
+        </div>
+    {% endif %}
+</div>
+
+<div class="text-center mt-4">
+    <a href="{% url 'add_route' %}" class="btn btn-primary btn-custom">
+        <i class="bi bi-plus-circle"></i> добавить новый маршрут
+    </a>
+    <a href="/admin/" target="_blank" class="btn btn-secondary btn-custom">
+        <i class="bi bi-gear"></i> управление через админ-панель
+    </a>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('search-input');
+    const routesContainer = document.getElementById('routes-container');
+    let searchTimeout;
+
+    searchInput.addEventListener('input', function() {
+        clearTimeout(searchTimeout);
+        
+        searchTimeout = setTimeout(function() {
+            const query = searchInput.value;
+            
+            fetch(`/search/?query=${encodeURIComponent(query)}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.results.length === 0) {
+                        routesContainer.innerHTML = `
+                            <div class="alert alert-warning text-center">
+                                <i class="bi bi-exclamation-triangle"></i>
+                                маршруты не найдены
+                            </div>
+                        `;
+                    } else {
+                        let html = '';
+                        data.results.forEach(route => {
+                            html += `
+                                <div class="card route-card mb-3">
+                                    <div class="card-body">
+                                        <div class="row align-items-center">
+                                            <div class="col-md-8">
+                                                <h5 class="card-title mb-2">
+                                                    <i class="bi bi-map-fill text-primary"></i>
+                                                    ${route.name}
+                                                </h5>
+                                                <p class="card-text text-muted mb-2">${route.description}</p>
+                                                <div class="d-flex gap-3 flex-wrap">
+                                                    <span class="badge bg-info">
+                                                        <i class="bi bi-rulers"></i> ${route.length_km} км
+                                                    </span>
+                                                    <span class="badge bg-warning">
+                                                        <i class="bi bi-activity"></i> ${route.difficulty}
+                                                    </span>
+                                                    <span class="badge bg-success">
+                                                        <i class="bi bi-people-fill"></i> ${route.members_count} чел.
+                                                    </span>
+                                                </div>
+                                            </div>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                        routesContainer.innerHTML = html;
+                    }
+                })
+                .catch(error => {
+                    console.error('ошибка поиска:', error);
+                });
+        }, 300);
+    });
+});
+</script>
+{% endblock %}

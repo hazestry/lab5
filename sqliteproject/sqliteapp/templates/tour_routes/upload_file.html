@@ -1,0 +1,53 @@
+{% extends 'tour_routes/base.html' %}
+
+{% block title %}загрузить XML-файл{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6 mx-auto">
+        <h2 class="mb-4 text-center">
+            <i class="bi bi-upload text-primary"></i>
+            загрузить XML-файл
+        </h2>
+
+        {% if message %}
+            <div class="alert alert-{{ message_type }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        {% endif %}
+
+        <div class="card">
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="mb-4">
+                        <label for="file-input" class="form-label fw-bold">
+                            <i class="bi bi-file-earmark-arrow-up"></i> выберите XML-файл
+                        </label>
+                        <input type="file" name="file" id="file-input" class="form-control form-control-lg" 
+                               accept=".xml" required>
+                        <div class="form-text">
+                            поддерживаются только файлы формата .xml
+                        </div>
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg btn-custom">
+                            <i class="bi bi-cloud-upload"></i> загрузить файл
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="mt-4 text-center">
+            <a href="{% url 'add_route' %}" class="btn btn-outline-primary btn-custom">
+                <i class="bi bi-plus-circle"></i> добавить маршрут
+            </a>
+            <a href="{% url 'list_files' %}" class="btn btn-outline-secondary btn-custom">
+                <i class="bi bi-file-earmark-text"></i> список файлов
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
