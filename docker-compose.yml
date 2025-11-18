@@ -1,7 +1,5 @@
-version: '3'
 services:
-
- db:
+  db:
     image: postgres:15
     env_file:
       - .env
@@ -11,16 +9,20 @@ services:
 
   web:
     build: .
-    command: python manage.py runserver 0.0.0.0:8000
+    command:
+      - python
+      - manage.py
+      - runserver
+      - 0.0.0.0:8000
     volumes:
-      - .:/app
+      - ./sqliteproject:/app
       - static_volume:/app/static
-    ports:
-      - "8001:8000"
     env_file:
       - .env
     depends_on:
       - db
+    ports:
+      - "8000:8000"
 
 volumes:
   postgres_data:
