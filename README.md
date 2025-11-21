@@ -4,29 +4,18 @@ Django-приложение для работы с базой данных SQLit
 - Python: 3.8+
 - pip: 20.0+
 # Установка
-1. Создайте директорию проекта
+1. Скопировать `.env.example` в `.env` и настроить переменные.
+2. Собрать и запустить сервисы:
    ```
-   mkdir course_platform
-   cd course_platform
+   docker-compose build
+   docker-compose up -d
    ```
-2. Cкачайте файлы проекта вручную или клонируйте через Git
+3. Провести миграции и собрать статические файлы:
    ```
-   git clone https://github.com/hazestry/course-platform.git
+   docker-compose exec web python manage.py migrate
+   docker-compose exec web python manage.py collectstatic
    ```
-3. Создайте и активируйте виртуальное окружение
-   - Mac/Linux: ``` python -m venv .venv && source .venv/bin/activate ```
-   - Windows: ```python -m venv .venv && .venv\Scripts\activate```
-4. Установить зависимости
-   ```
-   python -m pip install --upgrade pip
-   pip install -r requirements.txt
-   ```
-6. Запуск сервера
-   ```
-   python manage.py runserver
-   ```
-7. Открытие в браузере
-   ```
-   http://127.0.0.1:8000/
-   ```
+4. Открыть приложение на `http://localhost:8000/`
+
    
+
